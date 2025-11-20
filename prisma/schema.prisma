@@ -1,0 +1,92 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            Int              @id @default(autoincrement())
+  name          String
+  email         String           @unique
+  password      String?
+  image         String?
+  role          Role             @default(CUSTOMER)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  // VENDOR → can own multiple businesses
+  businesses    Business[]       @relation("UserBusinesses")
+
+  discussions   Discussion[]
+  verifications Verification[]   @relation("VendorVerification")
+  adminReviews  Verification[]   @relation("AdminVerification")
+}
+
+
+model Business {
+  id            Int           @id @default(autoincrement())
+  name          String
+  description   String
+  category      String
+  barangay      String
+  location      String
+  lat           Float?
+  lng           Float?
+  contactInfo   String?
+  socials       Json?
+  coverPhoto    String?
+  gallery       String[]       @default([])
+  isVerified    Boolean        @default(false)
+  openTime      String?
+  closeTime     String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // MANY businesses → ONE vendor
+  ownerId       Int
+  owner         User          @relation("UserBusinesses", fields: [ownerId], references: [id])
+
+  discussions   Discussion[]
+}
+
+
+model Verification {
+  id          Int       @id @default(autoincrement())
+
+  vendorId    Int
+  vendor      User      @relation("VendorVerification", fields: [vendorId], references: [id])
+
+  adminId     Int?
+  admin       User?     @relation("AdminVerification", fields: [adminId], references: [id])
+
+  documentUrl String
+  status      VerificationStatus @default(PENDING)
+  verifiedAt  DateTime?
+}
+
+model Discussion {
+  id         Int      @id @default(autoincrement())
+  content    String
+  createdAt  DateTime @default(now())
+
+  businessId Int
+  business   Business @relation(fields: [businessId], references: [id])
+
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Role {
+  CUSTOMER
+  VENDOR
+  ADMIN
+}
