@@ -1,0 +1,4 @@
+DATABASE_URL="postgresql://neondb_owner:npg_rTHSdo9Ow3jA@ep-wispy-river-a1lasq6n-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+JWT_SECRET="kenji"
+ADMIN_SECRET="sefuesca"
+PORT=8000
