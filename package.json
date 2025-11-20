@@ -11,7 +11,7 @@
     "db:migrate": "prisma migrate dev"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0",
+    "@prisma/client": "^6.16.3",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -35,8 +35,20 @@
     "@types/passport-github2": "^1.2.9",
     "@types/passport-google-oauth20": "^2.0.17",
     "nodemon": "^3.1.11",
-    "prisma": "^6.19.0",
+    "prisma": "^6.16.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
-  }
+  },
+  "description": "\"# backend-locafy\"",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NahoyaacKenshin/backend-locafy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NahoyaacKenshin/backend-locafy/issues"
+  },
+  "homepage": "https://github.com/NahoyaacKenshin/backend-locafy#readme"
 }
