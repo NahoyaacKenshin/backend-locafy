@@ -1,4 +1,28 @@
-DATABASE_URL="postgresql://neondb_owner:npg_rTHSdo9Ow3jA@ep-wispy-river-a1lasq6n-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-JWT_SECRET="kenji"
-ADMIN_SECRET="sefuesca"
+# Servers
+APP_NAME="LOCAFY"
 PORT=8000
+NODE_ENV=development
+DATABASE_URL="postgresql://neondb_owner:npg_rTHSdo9Ow3jA@ep-wispy-river-a1lasq6n-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+BACKEND_URL="http://localhost:8000"
+
+# JWT
+JWT_SECRET="kenji"
+
+# FRONTEND
+FRONTEND_URL="http://localhost:3000"
+
+# Email Credentials (Use GMAIL for Testing Only)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER="GMAIL Email Address - Replace it here"
+SMTP_PASSWORD="Generate GMAIL APP Password - Replace it here" #Tutorial: https://www.youtube.com/watch?v=74QQfPrk4vE
+SMTP_FROM="GMAIL Email Address - Replace it here"
+
+# OAuth Credentials (Github & Google)
+GOOGLE_CLIENT_ID="Replace with your Google Client ID"
+GOOGLE_CLIENT_SECRET="Replace with your Google Client Secret"
+GOOGLE_CALLBACK_URL="http://localhost:8000/api/auth/v1/google/callback"
+
+GITHUB_CLIENT_ID="Replace with your Github Client ID"
+GITHUB_CLIENT_SECRET="Replace with your Github Client Secret"
+GITHUB_CALLBACK_URL="http://localhost:8000/api/auth/v1/github/callback"
