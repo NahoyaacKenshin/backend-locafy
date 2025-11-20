@@ -2,7 +2,7 @@ import { TokenExpiry, signAccessToken, signRefreshToken } from "@/services/auth/
 import { UserRepository } from "@/repositories/user-repository";
 import { AccountRepository } from "@/repositories/account-repository";
 
-export type OAuthProvider = "google" | "github";
+export type OAuthProvider = "google"; // Removed "github"
 
 export type OAuthProfile = {
   provider: OAuthProvider;
