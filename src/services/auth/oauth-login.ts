@@ -2,7 +2,7 @@ import { TokenExpiry, signAccessToken, signRefreshToken } from "@/services/auth/
 import { UserRepository } from "@/repositories/user-repository";
 import { AccountRepository } from "@/repositories/account-repository";
 
-export type OAuthProvider = "google"; // Removed "github"
+export type OAuthProvider = "google";
 
 export type OAuthProfile = {
   provider: OAuthProvider;
@@ -99,3 +99,4 @@ function buildFallbackEmail(provider: string, providerAccountId: string) {
   const domain = process.env.APP_DOMAIN || "oauth.local";
   return `${sanitizedProvider}-${providerAccountId}@${domain}`;
 }
+

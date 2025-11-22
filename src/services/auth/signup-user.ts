@@ -3,7 +3,7 @@ import { UserRepository } from "@/repositories/user-repository";
 import { TokenRepository } from "@/repositories/token-repository";
 import { hashPassword } from "@/services/auth/helpers/password";
 import { renderTemplate } from "@/utils/template";
-import { sendEmail } from "@/services/mail/templates/mailer";
+import { sendEmail } from "@/services/mail/mailer";
 
 export async function SignupUserService(name: string, email: string, password: string) {
   const userRepository = new UserRepository();
@@ -30,7 +30,7 @@ export async function SignupUserService(name: string, email: string, password: s
 
     // Insert Email Verification Token
     await tokenRepository.createEmailVerificationToken({ userId: created.id, token, expiresAt });
-    const emailVerificationURL = `${process.env.FRONTEND_URL}/verify-email?token=${encodeURIComponent(token)}`;
+    const emailVerificationURL = `${process.env.FRONTEND_URL}/api/auth/v1/verify-email?token=${encodeURIComponent(token)}`;
 
     // Format Email HTML
     const html = renderTemplate("verify-email.html", {

@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { UserRepository } from "@/repositories/user-repository";
 import { TokenRepository } from "@/repositories/token-repository";
 import { renderTemplate } from "@/utils/template";
-import { sendEmail } from "@/services/mail/templates/mailer";
+import { sendEmail } from "@/services/mail/mailer";
 
 export async function ResendEmailVerificationService(email: string) {
   const userRepository = new UserRepository();
@@ -71,3 +71,4 @@ export async function ResendEmailVerificationService(email: string) {
     return { code: 500, status: "error", message: "Unable to resend verification email" };
   }
 }
+

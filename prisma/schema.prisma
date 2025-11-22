@@ -17,12 +17,49 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   emailVerified DateTime?      @map("email_verified")
+
+  // Relations
   accounts      Account[]
+  tokens        Token[]
   businesses    Business[]     @relation("UserBusinesses")
   discussions   Discussion[]
-  tokens        Token[]
   adminReviews  Verification[] @relation("AdminVerification")
   verifications Verification[] @relation("VendorVerification")
+}
+
+model Account {
+  id                String    @id @default(uuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  accessToken       String?   // optional
+  refreshToken      String?   // optional
+  expiresAt         DateTime? // optional
+  tokenType         String?   // optional
+  scope             String?   // optional
+  idToken           String?   // optional
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId, provider])
+}
+
+model Token {
+  id         String    @id @default(uuid())
+  type       TokenType
+  token      String    @unique
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+  consumedAt DateTime?
+  revokedAt  DateTime?
+  userId     String
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
 }
 
 model Business {
@@ -43,8 +80,10 @@ model Business {
   closeTime   String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
   ownerId     String
   owner       User         @relation("UserBusinesses", fields: [ownerId], references: [id])
+
   discussions Discussion[]
 }
 
@@ -55,6 +94,7 @@ model Verification {
   adminId     String?
   vendorId    String
   status      VerificationStatus @default(PENDING)
+
   admin       User?              @relation("AdminVerification", fields: [adminId], references: [id])
   vendor      User               @relation("VendorVerification", fields: [vendorId], references: [id])
 }
@@ -65,41 +105,9 @@ model Discussion {
   createdAt  DateTime @default(now())
   businessId Int
   userId     String
+
   business   Business @relation(fields: [businessId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
-}
-
-model Token {
-  id         String    @id @default(uuid())
-  type       TokenType
-  token      String    @unique
-  expiresAt  DateTime
-  createdAt  DateTime  @default(now())
-  consumedAt DateTime?
-  revokedAt  DateTime?
-  userId     String
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, type])
-}
-
-model Account {
-  id                String    @id @default(uuid())
-  userId            String
-  provider          String
-  providerAccountId String
-  accessToken       String?
-  refreshToken      String?
-  expiresAt         DateTime?
-  tokenType         String?
-  scope             String?
-  idToken           String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@index([userId, provider])
 }
 
 enum Role {

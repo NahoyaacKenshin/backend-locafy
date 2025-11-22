@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { SignupUserService, LoginCredentialsService, VerifyEmailService, RefreshTokenService, ResendEmailVerificationService } from "@/services/auth";
+import { generateTempToken } from "@/services/auth/temp-token";
 
 export class AuthController {
   // Credentials Signup
@@ -13,14 +14,6 @@ export class AuthController {
   public async verifyEmail(req: Request, res: Response) {
     const token = req.query.token as string;
     const result = await VerifyEmailService(token);
-
-    // Success → redirect to frontend
-    if (result.code === 200) {
-      const redirectURL = process.env.FRONTEND_URL || "http://localhost:3000";
-      // Can use the parameter (emailVerified=success) as an indicator for Frontend Alert
-      return res.redirect(`${redirectURL}?emailVerified=success`);
-    }
-
     return res.status(result.code).json(result);
   }
   
@@ -33,19 +26,9 @@ export class AuthController {
 
   // Refresh Token Helps Generate another valid Access Token
   public async refresh(req: Request, res: Response) {
-    const refreshHeader = req.headers["x-refresh-token"];
-    const refreshToken = (Array.isArray(refreshHeader) ? refreshHeader[0] : refreshHeader) ?? req.body?.refreshToken;
+    const { refreshToken } = req.body ?? {};
     const result = await RefreshTokenService(refreshToken);
     return res.status(result.code).json(result);
-  }
-
-  // Logout Account
-  public async logout(_req: Request, res: Response) {
-    return res.status(200).json({
-      code: 200,
-      status: "success",
-      message: "Logged out successfully",
-    });
   }
 
   // Resend Email Verification
@@ -59,7 +42,25 @@ export class AuthController {
   public async OAuthCallback(req: Request, res: Response) {
     const oauthResult = (req as any).user;
     const result = oauthResult ?? { code: 500, status: "error", message: "OAuth authentication failed" };
-    const statusCode = typeof result?.code === "number" ? result.code : 500;
-    return res.status(statusCode).json(result);
+    
+    // Get frontend URL from environment
+    const frontendURL = process.env.FRONTEND_URL || 'http://localhost:7000';
+    const callbackPath = '/oauth-callback';
+    
+    if (result.status === 'success' && result.data) {
+      // Generate temporary token with all the data
+      const tempCode = generateTempToken(result.data);
+      
+      return res.redirect(`${frontendURL}${callbackPath}?code=${tempCode}`);
+    } else {
+      // Redirect to frontend with error
+      const errorParams = new URLSearchParams({
+        status: 'error',
+        message: result.message || 'OAuth authentication failed',
+        code: result.code?.toString() || '500',
+      });
+      
+      return res.redirect(`${frontendURL}${callbackPath}?${errorParams.toString()}`);
+    }
   }
 }

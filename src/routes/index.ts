@@ -6,4 +6,5 @@ const router = Router();
 // Auth Endpoints
 router.use("/auth", authRoutes);
 
+
 export default router;

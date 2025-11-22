@@ -6,6 +6,4 @@ export function initializePassport() {
   if (googleStrategy) {
     passport.use("google", googleStrategy);
   }
-
-  // Removed GitHub strategy initialization
 }
