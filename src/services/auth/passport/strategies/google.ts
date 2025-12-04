@@ -20,6 +20,9 @@ export function buildGoogleStrategy() {
     },
     async (accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
       try {
+        // Google OAuth tokens typically expire in 1 hour (3600 seconds)
+        const expiresAt = new Date(Date.now() + 3600 * 1000);
+        
         const result = await OAuthLoginService({
           provider: "google",
           providerAccountId: profile.id,
@@ -27,6 +30,7 @@ export function buildGoogleStrategy() {
           name: profile.displayName ?? buildNameFromProfile(profile),
           accessToken,
           refreshToken,
+          expiresAt,
         });
         return done(null, result);
       } catch (error) {

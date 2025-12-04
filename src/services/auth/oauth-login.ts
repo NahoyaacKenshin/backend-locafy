@@ -85,6 +85,7 @@ export async function OAuthLoginService(profile: OAuthProfile) {
           email: user.email,
           name: user.name,
           role: user.role,
+          emailVerified: user.emailVerified,
         },
       },
     };

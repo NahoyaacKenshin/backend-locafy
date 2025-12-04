@@ -58,4 +58,28 @@ export class UserRepository {
       select: { id: true, email: true, emailVerified: true },
     });
   }
+
+  async updateRole(userId: string, role: 'CUSTOMER' | 'VENDOR' | 'ADMIN') {
+    return prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: { id: true, name: true, email: true, role: true },
+    });
+  }
+
+  async getUserRole(userId: string): Promise<'CUSTOMER' | 'VENDOR' | 'ADMIN' | null> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+    return user?.role || null;
+  }
+
+  async updatePassword(userId: string, hashedPassword: string) {
+    return prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+      select: { id: true, email: true },
+    });
+  }
 }
